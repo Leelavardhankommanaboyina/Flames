@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .card {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, #ff00ff, #ffff00, #00ffff, #ff00ff);
+            background-size: 300% 300%;
+            z-index: 0;
+            animation: glowing 5s linear infinite;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+        }
+
+        @keyframes glowing {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(50px) translateY(50px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        h2 {
+            color: #ff66ff;
+            z-index: 2;
+            position: relative;
+        }
+
+        form {
+            z-index: 2;
+            position: relative;
+        }
+
+        input[type='text'] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ff66ff;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+
+        input[type='submit'] {
+            background-color: #ff66ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        input[type='submit']:hover {
+            background-color: #ff33cc;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Modal CSS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            color: white;
+        }
+
+        .modal h3 {
+            margin: 0;
+            font-size: 24px;
+            color: #ff66ff;
+        }
+
+        .modal p {
+            margin: 10px 0 20px;
+            font-size: 18px;
+        }
+
+        .close-btn {
+            background-color: #ff66ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: #ff33cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-content">
+            <h2>FLAMES</h2>
+            <form id="flamesForm">
+                <input type="text" name="s1" placeholder="Enter Name One" required>
+                <input type="text" name="s2" placeholder="Enter Name Two" required>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="resultModal" class="modal" >
+        <h3>FLAMES Result</h3>
+        <p id="flamesResult"></p>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+
+    <script>
+        document.getElementById('flamesForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var s1 = document.getElementsByName('s1')[0].value;
+            var s2 = document.getElementsByName('s2')[0].value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'FlamesServlet?s1=' + s1 + '&s2=' + s2, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('flamesResult').innerText = xhr.responseText;
+                    document.getElementById('resultModal').style.display = 'block';
+                }
+            };
+            xhr.send();
+        });
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
